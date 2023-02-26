@@ -5,11 +5,13 @@ const Stopwatch = () => {
   const [timer, setTimer] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [isReset, setIsReset] = useState(false);
+  const [isResume, setIsResume] = useState(false);
   const countRef = useRef(null);
 
   const handleStart = () => {
     setIsActive(true);
     setIsReset(true);
+    setIsResume(true);
     countRef.current = setInterval(() => {
       setTimer((timer) => timer + 1);
     }, 1000);
@@ -18,10 +20,12 @@ const Stopwatch = () => {
   const handlePause = () => {
     setIsReset(false);
     setIsActive(false);
+    setIsResume(true);
     clearInterval(countRef.current);
   };
 
   const handleReset = () => {
+    setIsResume(false);
     clearInterval(countRef.current);
     setIsActive(false);
     setTimer(0);
@@ -41,10 +45,10 @@ const Stopwatch = () => {
       <div className="body">
         <h3>React Stopwatch</h3>
         <p>{formatTime()}</p>
-        <div className="buttons">
+        <div>
           {isActive === false ? (
             <button className="btn" onClick={handleStart}>
-              Start
+              {isResume === false ? "Start" : "Resume"}
             </button>
           ) : (
             <button className="btn" onClick={handlePause}>
@@ -54,7 +58,7 @@ const Stopwatch = () => {
           <button
             className="btn"
             onClick={handleReset}
-            disabled={isReset === true ? false : true}
+            disabled={isReset === false ? false : true}
           >
             Reset
           </button>
